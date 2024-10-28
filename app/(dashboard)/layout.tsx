@@ -9,7 +9,12 @@ import {
   ShoppingCart,
   Users2
 } from 'lucide-react';
+import { getTokens } from "next-firebase-auth-edge";
+import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
+import { Analytics } from '@vercel/analytics/react';
 
+import { clientConfig, serverConfig } from 'config';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -25,18 +30,29 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { Analytics } from '@vercel/analytics/react';
 import { User } from './user';
 import { VercelLogo } from '@/components/icons';
 import Providers from './providers';
 import { NavItem } from './nav-item';
 import { SearchInput } from './search';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
+  const cks = await cookies();
+  const tokens = await getTokens(cks, {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });1
+
+  if (!tokens) {
+    notFound();
+  }
+
   return (
     <Providers>
       <main className="flex min-h-screen w-full flex-col bg-muted/40">

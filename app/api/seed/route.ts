@@ -1,13 +1,15 @@
-import { db, products } from 'lib/db';
+import { collection, doc, writeBatch } from "firebase/firestore/lite";
+import { firestore } from "@/lib/db";
 
-export const dynamic = 'force-dynamic';
 
 export async function GET() {
   // return Response.json({
   //   message: 'Uncomment to seed data after DB is set up.'
   // });
 
-  await db.insert(products).values([
+  let batch = writeBatch(firestore);
+
+  [
     {
       id: 1,
       imageUrl:
@@ -108,5 +110,10 @@ export async function GET() {
       stock: 175,
       availableAt: new Date()
     }
-  ]);
+  ].forEach((obj) => {
+    var docRef = doc(collection(firestore, "products")); //automatically generate unique id
+    batch.set(docRef, obj);
+  });
+
+  batch.commit();
 }

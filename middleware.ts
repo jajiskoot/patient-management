@@ -1,6 +1,24 @@
-export { auth as middleware } from '@/lib/auth';
+import { NextRequest } from "next/server";
+import { authMiddleware } from "next-firebase-auth-edge";
+import { clientConfig, serverConfig } from "./config";
 
-// Don't invoke Middleware on some paths
+export async function middleware(request: NextRequest) {
+  return authMiddleware(request, {
+    loginPath: "/api/login",
+    logoutPath: "/api/logout",
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    cookieSerializeOptions: serverConfig.cookieSerializeOptions,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+}
+
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  matcher: [
+    "/",
+    "/((?!_next|api|.*\\.).*)",
+    "/api/login",
+    "/api/logout",
+  ],
 };

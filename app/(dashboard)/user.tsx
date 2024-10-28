@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { auth, signOut } from '@/lib/auth';
+// import { auth, signOut } from '@/lib/auth';
 import Image from 'next/image';
 import {
   DropdownMenu,
@@ -42,8 +42,8 @@ export async function User() {
           <DropdownMenuItem>
             <form
               action={async () => {
-                'use server';
-                await signOut();
+                // 'use server';
+                // await signOut();
               }}
             >
               <button type="submit">Sign Out</button>
