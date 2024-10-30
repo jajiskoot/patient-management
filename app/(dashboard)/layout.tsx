@@ -14,7 +14,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { Analytics } from '@vercel/analytics/react';
 
-import { clientConfig, serverConfig } from 'config';
+import { clientConfig, serverConfig } from '@/config';
 import {
   Breadcrumb,
   BreadcrumbItem,

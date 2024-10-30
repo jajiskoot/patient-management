@@ -2,7 +2,7 @@ import 'server-only';
 
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
-import { app } from 'firebase';
+import { app } from '@/firebase';
 
 export const firestore = getFirestore(app);
 
