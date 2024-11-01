@@ -1,4 +1,6 @@
-import Image from 'next/image';
+import { MoreHorizontal } from 'lucide-react';
+import { DocumentData } from 'firebase/firestore/lite';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,34 +10,33 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { SelectProduct } from '@/lib/db';
-import { deleteProduct } from './actions';
+import { deletePatient } from './actions';
+import { Address, Patient } from '@/types';
 
-export function Product({ product }: { product: SelectProduct }) {
+export function PatientRow({ patient }: { patient: Patient }) {
+  const stringifyAddresses = (addresses: Address[] | undefined) => {
+    if(addresses) {
+      return addresses.map((value) => {
+        return `${value.street}, ${value.city}, ${value.state} ${value.zipcode}`
+      });
+    }
+    return 'None on File';
+  }
+
   return (
     <TableRow>
-      <TableCell className="hidden sm:table-cell">
-        <Image
-          alt="Product image"
-          className="aspect-square rounded-md object-cover"
-          height="64"
-          src={product.imageUrl}
-          width="64"
-        />
+      <TableCell className="font-medium">{`${patient.firstName} ${patient.middleName} ${patient.lastName}`}</TableCell>
+      <TableCell className="hidden md:table-cell">
+        {patient.dob}
       </TableCell>
-      <TableCell className="font-medium">{product.name}</TableCell>
       <TableCell>
         <Badge variant="outline" className="capitalize">
-          {product.status}
+          {patient.status}
         </Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${product.price}`}</TableCell>
-      <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
-      <TableCell className="hidden md:table-cell">
-        {product.availableAt.toLocaleDateString("en-US")}
-      </TableCell>
+      {/* TODO: update for multiple addresses */}
+      <TableCell className="hidden md:table-cell">{stringifyAddresses(patient.address)}</TableCell>
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -48,7 +49,7 @@ export function Product({ product }: { product: SelectProduct }) {
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>
-              <form action={deleteProduct}>
+              <form action={deletePatient}>
                 <button type="submit">Delete</button>
               </form>
             </DropdownMenuItem>

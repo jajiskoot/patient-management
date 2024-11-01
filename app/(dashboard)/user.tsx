@@ -1,6 +1,3 @@
-import { Button } from '@/components/ui/button';
-// import { auth, signOut } from '@/lib/auth';
-import Image from 'next/image';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,21 +7,33 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import { getTokens } from 'next-firebase-auth-edge';
+import { clientConfig, serverConfig } from '@/config';
+import { SignOut } from './sign-out';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 export async function User() {
-  let session = await auth();
-  let user = session?.user;
+  const cks = await cookies();
+  const tokens = await getTokens(cks, {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
+      <Button
           variant="outline"
           size="icon"
           className="overflow-hidden rounded-full"
         >
           <Image
-            src={user?.image ?? '/placeholder-user.jpg'}
+          // Add in profile pic?
+            src={'/placeholder-user.jpg'}
             width={36}
             height={36}
             alt="Avatar"
@@ -38,16 +47,9 @@ export async function User() {
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuSeparator />
-        {user ? (
+        {tokens ? (
           <DropdownMenuItem>
-            <form
-              action={async () => {
-                // 'use server';
-                // await signOut();
-              }}
-            >
-              <button type="submit">Sign Out</button>
-            </form>
+            <SignOut />
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem>

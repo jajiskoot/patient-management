@@ -1,119 +1,98 @@
 import { collection, doc, writeBatch } from "firebase/firestore/lite";
 import { firestore } from "@/lib/db";
+import { getTokens } from "next-firebase-auth-edge";
+import { cookies } from "next/headers";
+import { clientConfig, serverConfig } from "@/config";
 
 
 export async function GET() {
-  // return Response.json({
-  //   message: 'Uncomment to seed data after DB is set up.'
-  // });
+  
+  const cks = await cookies();
+  const tokens = await getTokens(cks, {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
 
-  let batch = writeBatch(firestore);
+  if (!tokens) {
+    return Response.json({
+      message: 'No valid token'
+    });
+  }
+  const batch = writeBatch(firestore);
 
   [
     {
-      id: 1,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/smartphone-gaPvyZW6aww0IhD3dOpaU6gBGILtcJ.webp',
-      name: 'Smartphone X Pro',
-      status: 'active',
-      price: '999.00',
-      stock: 150,
-      availableAt: new Date()
+      firstName: 'Sean',
+      middleName: 'Andrew',
+      lastName: 'Smith',
+      dob: new Date('1994-11-27'),
+      status: 'Active',
+      address: [{
+        street: '215 Turnpoint Ave',
+        city: 'Orlando',
+        state: 'FL',
+        zipcode: '32812'
+      }],
+      daysActive: 150
     },
     {
-      id: 2,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/earbuds-3rew4JGdIK81KNlR8Edr8NBBhFTOtX.webp',
-      name: 'Wireless Earbuds Ultra',
-      status: 'active',
-      price: '199.00',
-      stock: 300,
-      availableAt: new Date()
+      firstName: 'James',
+      middleName: 'Jingle',
+      lastName: 'Johnson',
+      dob: new Date('1986-02-15'),
+      status: 'Inquiry',
+      daysActive: 150,
     },
     {
-      id: 3,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/home-iTeNnmKSMnrykOS9IYyJvnLFgap7Vw.webp',
-      name: 'Smart Home Hub',
-      status: 'active',
-      price: '149.00',
-      stock: 200,
-      availableAt: new Date()
+      firstName: 'Nissan',
+      middleName: 'Andrew',
+      lastName: 'Smith',
+      dob: new Date('1994-09-25'),
+      status: 'Onboarding',
+      daysActive: 150,
     },
     {
-      id: 4,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/tv-H4l26crxtm9EQHLWc0ddrsXZ0V0Ofw.webp',
-      name: '4K Ultra HD Smart TV',
-      status: 'active',
-      price: '799.00',
-      stock: 50,
-      availableAt: new Date()
+      firstName: 'Hugh',
+      middleName: 'Jack',
+      lastName: 'Man',
+      dob: new Date('1972-12-03'),
+      status: 'Active',
+      daysActive: 150,
     },
     {
-      id: 5,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/laptop-9bgUhjY491hkxiMDeSgqb9R5I3lHNL.webp',
-      name: 'Gaming Laptop Pro',
-      status: 'active',
-      price: '1299.00',
-      stock: 75,
-      availableAt: new Date()
+      firstName: 'Paul',
+      middleName: 'Christian',
+      lastName: 'Rudolph',
+      dob: new Date('1963-05-21'),
+      status: 'Active',
+      daysActive: 150,
     },
     {
-      id: 6,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/headset-lYnRnpjDbZkB78lS7nnqEJFYFAUDg6.webp',
-      name: 'VR Headset Plus',
-      status: 'active',
-      price: '349.00',
-      stock: 120,
-      availableAt: new Date()
+      firstName: 'Lisa',
+      middleName: 'Katie',
+      lastName: 'Solderholm',
+      dob: new Date('1951-01-13'),
+      status: 'Churned',
+      daysActive: 150,
     },
     {
-      id: 7,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/watch-S2VeARK6sEM9QFg4yNQNjHFaHc3sXv.webp',
-      name: 'Smartwatch Elite',
-      status: 'active',
-      price: '249.00',
-      stock: 250,
-      availableAt: new Date()
-    },
-    {
-      id: 8,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/speaker-4Zk0Ctx5AvxnwNNTFWVK4Gtpru4YEf.webp',
-      name: 'Bluetooth Speaker Max',
-      status: 'active',
-      price: '99.00',
-      stock: 400,
-      availableAt: new Date()
-    },
-    {
-      id: 9,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/charger-GzRr0NSkCj0ZYWkTMvxXGZQu47w9r5.webp',
-      name: 'Portable Charger Super',
-      status: 'active',
-      price: '59.00',
-      stock: 500,
-      availableAt: new Date()
-    },
-    {
-      id: 10,
-      imageUrl:
-        'https://uwja77bygk2kgfqe.public.blob.vercel-storage.com/thermostat-8GnK2LDE3lZAjUVtiBk61RrSuqSTF7.webp',
-      name: 'Smart Thermostat Pro',
-      status: 'active',
-      price: '199.00',
-      stock: 175,
-      availableAt: new Date()
+      firstName: 'Jackie',
+      middleName: 'Wynona',
+      lastName: 'Ryder',
+      dob: new Date('1981-04-06'),
+      status: 'Active',
+      daysActive: 150,
     }
   ].forEach((obj) => {
-    var docRef = doc(collection(firestore, "products")); //automatically generate unique id
+    const docRef = doc(collection(firestore, "patients")); //automatically generate unique id
     batch.set(docRef, obj);
   });
 
-  batch.commit();
+  await batch.commit();
+
+  return Response.json({
+    message: 'Firestore data seeded.'
+  });
 }

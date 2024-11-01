@@ -47,7 +47,7 @@ export default async function DashboardLayout({
     cookieName: serverConfig.cookieName,
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
     serviceAccount: serverConfig.serviceAccount,
-  });1
+  });
 
   if (!tokens) {
     notFound();
@@ -90,15 +90,11 @@ function DesktopNav() {
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="#" label="Orders">
-          <ShoppingCart className="h-5 w-5" />
+        <NavItem href="/" label="Patients">
+          <Users2 className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/" label="Products">
-          <Package className="h-5 w-5" />
-        </NavItem>
-
-        <NavItem href="/customers" label="Customers">
+        <NavItem href="/add-patient" label="Add Patients">
           <Users2 className="h-5 w-5" />
         </NavItem>
 
@@ -151,24 +147,17 @@ function MobileNav() {
           </Link>
           <Link
             href="#"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            className="flex items-center gap-4 px-2.5 text-foreground"
           >
-            <ShoppingCart className="h-5 w-5" />
-            Orders
+            <Users2 className="h-5 w-5" />
+            Patients
           </Link>
           <Link
             href="#"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
-            <Package className="h-5 w-5" />
-            Products
-          </Link>
-          <Link
-            href="#"
-            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-          >
             <Users2 className="h-5 w-5" />
-            Customers
+            Add Patients
           </Link>
           <Link
             href="#"
@@ -195,12 +184,12 @@ function DashboardBreadcrumb() {
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="#">Products</Link>
+            <Link href="#">Patients</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage>All Products</BreadcrumbPage>
+          <BreadcrumbPage>All Patients</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
