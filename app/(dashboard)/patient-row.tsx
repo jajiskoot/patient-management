@@ -1,19 +1,11 @@
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import { DocumentData } from 'firebase/firestore/lite';
+import { Edit, Trash } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { deletePatient } from './actions';
 import { Address, Patient } from '@/types';
-import { useRouter } from 'next/navigation';
 
 export function PatientRow({ patient }: { patient: Patient }) {
   const router = useRouter();

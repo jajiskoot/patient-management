@@ -2,11 +2,9 @@ import Link from 'next/link';
 import {
   Home,
   LineChart,
-  Package,
   Package2,
   PanelLeft,
   Settings,
-  ShoppingCart,
   Users2
 } from 'lucide-react';
 import { getTokens } from "next-firebase-auth-edge";

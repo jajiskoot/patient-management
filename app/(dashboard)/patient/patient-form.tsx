@@ -2,7 +2,7 @@
 
 import { AdditionalFieldSchema, AddressSchema, Patient, PatientSchema, STATES, STATUS } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";

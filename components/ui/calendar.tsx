@@ -71,10 +71,11 @@ function Calendar({
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+        ...classNames,
       }}
       components={{
-        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" {...props} />,
+        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" {...props} />,
         Dropdown: ({ ...props }) => (
           <Select
             {...props}
@@ -91,6 +92,7 @@ function Calendar({
             <SelectContent className="max-h-[var(--radix-popper-available-height);] overflow-y-auto scrolling-auto min-w-[var(--radix-popper-anchor-width)]">
               {props.children &&
                 React.Children.map(props.children, (child) =>
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   <SelectItem value={(child as React.ReactElement<any>)?.props?.value} className="min-w-[var(--radix-popper-anchor-width)]">{(child as React.ReactElement<any>)?.props?.children}</SelectItem>
                 )
               }

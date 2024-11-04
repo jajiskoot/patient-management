@@ -22,6 +22,7 @@ const patientsCol = collection(firestore, 'patients');
 
 function toPatient(doc: DocumentSnapshot) {
   const data = doc.data();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const document: Record<string, any> = { 'id': doc.id };
   for (const key in data) {
     const value = data[key];
