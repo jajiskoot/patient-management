@@ -94,7 +94,7 @@ function DesktopNav() {
           <Users2 className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/add-patient" label="Add Patients">
+        <NavItem href="patient" label="Add/Edit Patients">
           <Users2 className="h-5 w-5" />
         </NavItem>
 

@@ -1,57 +1,91 @@
-import 'server-only';
-
-import { getFirestore, collection, getDocs, DocumentData, Timestamp, setDoc, doc } from 'firebase/firestore/lite';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  Timestamp,
+  setDoc,
+  doc,
+  getDoc,
+  DocumentSnapshot,
+  query,
+  where,
+  and,
+  or,
+  deleteDoc
+} from 'firebase/firestore/lite';
 
 import { app } from '@/firebase';
-import { Patient } from '@/types';
+import { Patient, STATUS } from '@/types';
 
 export const firestore = getFirestore(app);
+const patientsCol = collection(firestore, 'patients');
 
+function toPatient(doc: DocumentSnapshot) {
+  const data = doc.data();
+  const document: Record<string, any> = { 'id': doc.id };
+  for (const key in data) {
+    const value = data[key];
+    if (value instanceof Timestamp) {
+      document[key] = value.toDate();
+    } else {
+      document[key] = value;
+    }
+  }
+  return document as Patient;
+}
+
+
+export async function getPatient(
+  id: string,
+): Promise<Patient> {
+  const snapshot = await getDoc(doc(patientsCol, id));
+  return toPatient(snapshot);
+
+}
 
 export async function getPatients(
   search: string,
-  offset: number
+  offset: number,
+  status?: STATUS
 ): Promise<{
   patients: Patient[];
   newOffset: number | null;
   totalPatients: number;
 }> {
 
+  let q = query(patientsCol);
+
   // Always search the full table, not per page
-  // if (search) {
-  //   return {
-  //     patients: await db
-  //       .select()
-  //       .from(patients)
-  //       .where(ilike(patients.name, `%${search}%`))
-  //       .limit(1000),
-  //     newOffset: null,
-  //     totalpatients: 0
-  //   };
-  // }
+  if (search) {
+    q = query(q,
+      // TODO: search across all name fields simultaneously
+      // potentially a full_name index?
+      or(
+        and(
+          where("firstName", ">=", search),
+          where("firstName", "<=", search + '~'),
+        ),
+        and(
+          where("middleName", ">=", search),
+          where("middleName", "<=", search + '~'),
+        ),
+        and(
+          where("lastName", ">=", search),
+          where("lastName", "<=", search + '~')
+        ),
+      )
+    );
+  }
 
-  // if (offset === null) {
-  //   return { patients: [], newOffset: null, totalpatients: 0 };
-  // }
+  if (status) {
+    q = query(q, where("status", "==", status));
+  }
 
-  // let totalpatients = await db.select({ count: count() }).from(patients);
-  // let morepatients = await db.select().from(patients).limit(5).offset(offset);
-  // let newOffset = morepatients.length >= 5 ? offset + 5 : null;
+  // TODO: offset with pagination for firestore
   const patients: Patient[] = [];
-  const snapshot = await getDocs(collection(firestore, 'patients'));
+  const snapshot = await getDocs(q);
   snapshot.forEach((doc) => {
-    const data = doc.data();
-    const document: Record<string, T> = {};
-    for (const key in data) {
-      const value = data[key];
-      if (value instanceof Timestamp) {
-        document[key] = value.toDate().toDateString();
-      } else {
-        document[key] = value;
-      }
-    }
-
-    patients.push(document as Patient);
+    patients.push(toPatient(doc));
   });
 
   return {
@@ -62,19 +96,7 @@ export async function getPatients(
 }
 
 export async function addPatient(data: Patient): Promise<{ message: string }> {
-  // const cks = await cookies();
-  // const tokens = await getTokens(cks, {
-  //   apiKey: clientConfig.apiKey,
-  //   cookieName: serverConfig.cookieName,
-  //   cookieSignatureKeys: serverConfig.cookieSignatureKeys,
-  //   serviceAccount: serverConfig.serviceAccount,
-  // });
 
-  // if (!tokens) {
-  //   return {
-  //     message: 'No valid token'
-  //   };
-  // }
   const docRef = doc(collection(firestore, "patients")); //automatically generate unique id
 
   await setDoc(docRef, data);
@@ -84,6 +106,18 @@ export async function addPatient(data: Patient): Promise<{ message: string }> {
   };
 }
 
-// export async function deletePatientById(id: number) {
-//   await db.delete(patients).where(eq(patients.id, id));
-// }
+// TODO: Worth modifying to send only changed fields instead of whole Patient?
+export async function updatePatient(data: Patient) {
+  const docRef = doc(patientsCol, data.id);
+
+  await setDoc(docRef, data);
+
+  return {
+    message: 'Patient data updated successfully.'
+  }
+}
+
+export async function deletePatientById(id: string) {
+  await deleteDoc(doc(patientsCol, id));
+
+}

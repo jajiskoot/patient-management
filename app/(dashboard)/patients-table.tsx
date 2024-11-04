@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { PatientRow } from './patient';
+import { PatientRow } from './patient-row';
 import { Button } from '@/components/ui/button';
 import { Patient } from '@/types';
 
@@ -33,7 +33,6 @@ export function PatientsTable({
   totalPatients: number;
 }) {
   const router = useRouter();
-  const patientsPerPage = 5;
 
   function prevPage() {
     router.back();
@@ -62,7 +61,7 @@ export function PatientsTable({
                 Address
               </TableHead>
               <TableHead>
-                <span className="sr-only">Actions</span>
+                Actions
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -78,7 +77,7 @@ export function PatientsTable({
           <div className="text-xs text-muted-foreground">
             Showing{' '}
             <strong>
-              {Math.max(0, Math.min(offset - patientsPerPage, totalPatients) + 1)}-{offset}
+              {Math.max(0, offset + 1)}-{totalPatients}
             </strong>{' '}
             of <strong>{totalPatients}</strong> patients
           </div>
@@ -88,7 +87,7 @@ export function PatientsTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset === patientsPerPage}
+            // TODO: Disable if at beginning of pagination
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Prev
@@ -98,7 +97,7 @@ export function PatientsTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset + patientsPerPage > totalPatients}
+            // TODO: Disable at end of pagination
             >
               Next
               <ChevronRight className="ml-2 h-4 w-4" />

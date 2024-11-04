@@ -1,4 +1,4 @@
-import { MoreHorizontal } from 'lucide-react';
+import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { DocumentData } from 'firebase/firestore/lite';
 
 import { Badge } from '@/components/ui/badge';
@@ -13,13 +13,16 @@ import {
 import { TableCell, TableRow } from '@/components/ui/table';
 import { deletePatient } from './actions';
 import { Address, Patient } from '@/types';
+import { useRouter } from 'next/navigation';
 
 export function PatientRow({ patient }: { patient: Patient }) {
+  const router = useRouter();
+
   const stringifyAddresses = (addresses: Address[] | undefined) => {
-    if(addresses) {
-      return addresses.map((value) => {
-        return `${value.street}, ${value.city}, ${value.state} ${value.zipcode}`
-      });
+    if (addresses) {
+      const additionalAddresses = addresses.length > 1 ? `, ...+${addresses.length - 1}` : '';
+      // TODO: add a prefered address field?
+      return `${addresses[0].street}, ${addresses[0].city}, ${addresses[0].state}, ${addresses[0].zipcode}${additionalAddresses}`;
     }
     return 'None on File';
   }
@@ -28,7 +31,7 @@ export function PatientRow({ patient }: { patient: Patient }) {
     <TableRow>
       <TableCell className="font-medium">{`${patient.firstName} ${patient.middleName} ${patient.lastName}`}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {patient.dob}
+        {patient.dob.toDateString()}
       </TableCell>
       <TableCell>
         <Badge variant="outline" className="capitalize">
@@ -38,23 +41,11 @@ export function PatientRow({ patient }: { patient: Patient }) {
       {/* TODO: update for multiple addresses */}
       <TableCell className="hidden md:table-cell">{stringifyAddresses(patient.address)}</TableCell>
       <TableCell>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button aria-haspopup="true" size="icon" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>
-              <form action={deletePatient}>
-                <button type="submit">Delete</button>
-              </form>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button variant='ghost' className='pl-0 mr-4' onClick={() => router.push(`/patient/${patient.id}`)}>
+          <Edit />
+        </Button>
+        {/* TODO: create confirmation popup */}
+        <Button variant='ghost' onClick={() => deletePatient(patient.id!)}><Trash /></Button>
       </TableCell>
     </TableRow>
   );
