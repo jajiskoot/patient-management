@@ -84,7 +84,7 @@ function DesktopNav() {
           <span className="sr-only">Acme Inc</span>
         </Link>
 
-        <NavItem href="#" label="Dashboard">
+        <NavItem href="/" label="Dashboard">
           <Home className="h-5 w-5" />
         </NavItem>
 
@@ -176,18 +176,14 @@ function DashboardBreadcrumb() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="#">Dashboard</Link>
+            <Link href="/">Dashboard</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="#">Patients</Link>
+            <Link href="/">Patients</Link>
           </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>All Patients</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
