@@ -13,14 +13,6 @@ import { notFound } from "next/navigation";
 import { Analytics } from '@vercel/analytics/react';
 
 import { clientConfig, serverConfig } from '@/config';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -33,6 +25,7 @@ import { VercelLogo } from '@/components/icons';
 import Providers from './providers';
 import { NavItem } from './nav-item';
 import { SearchInput } from './search';
+import { DashboardBreadcrumb } from './breadcrumb';
 
 export default async function DashboardLayout({
   children
@@ -84,7 +77,7 @@ function DesktopNav() {
           <span className="sr-only">Acme Inc</span>
         </Link>
 
-        <NavItem href="/" label="Dashboard">
+        <NavItem href="#" label="Dashboard">
           <Home className="h-5 w-5" />
         </NavItem>
 
@@ -167,25 +160,5 @@ function MobileNav() {
         </nav>
       </SheetContent>
     </Sheet>
-  );
-}
-
-function DashboardBreadcrumb() {
-  return (
-    <Breadcrumb className="hidden md:flex">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/">Dashboard</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/">Patients</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
   );
 }
