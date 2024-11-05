@@ -7,8 +7,6 @@ export enum STATUS {
   Churned = 'Churned',
 }
 
-const StatusSchema = z.nativeEnum(STATUS).default(STATUS.Inquiry)
-
 export enum STATES {
   AL = 'AL',
   AK = 'AK',
@@ -71,15 +69,26 @@ export enum STATES {
   WY = 'WY'
 }
 
-export const StateSchema = z.nativeEnum(STATES).default(STATES.AL);
+const errorMessageTooShort = { message: ''};
+const errorMessageTooLong = { message: 'Please input a valid value'};
 
-const ZipcodeSchema = z.string().max(5).min(5).default("12345");
+const StatusSchema = z.nativeEnum(STATUS, errorMessageTooShort)
 
-export const AddressSchema = z.object({
+export const StateSchema = z.nativeEnum(STATES, errorMessageTooShort);
+
+
+const AddressFormSchema = z.object({
   street: z.string().default(""),
   city: z.string().default(""),
+  state: StateSchema.optional(),
+  zipcode: z.string().default(""),
+});
+
+export const AddressSchema = z.object({
+  street: z.string().min(2, errorMessageTooShort).max(80, errorMessageTooLong).regex(/\w+(\s\w+){2,}/),
+  city: z.string().min(2, errorMessageTooShort).max(80, errorMessageTooLong),
   state: StateSchema,
-  zipcode: ZipcodeSchema,
+  zipcode: z.string().min(5, errorMessageTooShort).max(5, errorMessageTooLong),
 });
 
 export const AdditionalFieldSchema = z.object({
@@ -87,16 +96,28 @@ export const AdditionalFieldSchema = z.object({
   value: z.string().default(""),
 })
 
-export const PatientSchema = z.object({
+export const PatientFormSchema = z.object({
   id: z.string().optional(),
   createdOn: z.number().default(Date.now()),
   firstName: z.string().default(""),
   middleName: z.string().default(""),
   lastName: z.string().default(""),
-  dob: z.date().default(new Date('1987-04-03')),
-  status: StatusSchema,
-  address: AddressSchema.array().default([AddressSchema.parse({})]),
+  dob: z.date().optional(),
+  status: StatusSchema.optional(),
+  address: AddressFormSchema.array().default([AddressFormSchema.parse({})]),
   additionalFields: AdditionalFieldSchema.array().default([AdditionalFieldSchema.parse({})]),
+})
+
+export const PatientSchema = z.object({
+  id: z.string().optional(),
+  createdOn: z.number(),
+  firstName: z.string().min(2, errorMessageTooShort).max(80, errorMessageTooLong),
+  middleName: z.string().min(2, errorMessageTooShort).max(80, errorMessageTooLong),
+  lastName: z.string().min(2, errorMessageTooShort).max(80, errorMessageTooLong),
+  dob: z.date(errorMessageTooShort),
+  status: StatusSchema,
+  address: AddressSchema.array(),
+  additionalFields: AdditionalFieldSchema.array(),
 });
 
 export type Address = z.infer<typeof AddressSchema>;

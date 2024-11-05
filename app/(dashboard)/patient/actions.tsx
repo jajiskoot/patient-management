@@ -2,8 +2,9 @@
 
 import { addPatient, updatePatient } from "@/lib/db";
 import { Patient, PatientSchema } from "@/types";
+import { ZodError } from "zod";
 
-export async function submitPatient(values: Patient, patientId: string) {
+export async function submitPatient(values: Patient, patientId: string): Promise<{ error: ZodError<Patient> | undefined }> {
   const { data, error } = PatientSchema.safeParse(values);
   if (!error) {
     if (patientId) {
@@ -12,4 +13,5 @@ export async function submitPatient(values: Patient, patientId: string) {
       addPatient(data);
     }
   }
+  return { error: error };
 }

@@ -1,9 +1,12 @@
 "use client";
 
-import { AdditionalFieldSchema, AddressSchema, Patient, PatientSchema, STATES, STATUS } from "@/types";
+import { useRouter } from "next/navigation";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 
+import { AdditionalFieldSchema, AddressSchema, Patient, PatientFormSchema, PatientSchema, STATES, STATUS } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -17,17 +20,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { submitPatient } from "./actions";
-import { useRouter } from "next/navigation";
 
 export function PatientForm({ patient }: { patient?: Patient }) {
   const form = useForm<Patient>({
     resolver: zodResolver(PatientSchema),
-    defaultValues: patient ?? PatientSchema.parse({})
+    defaultValues: patient ?? PatientFormSchema.parse({})
   })
 
   const { fields: addressFields, append: addAddressField } = useFieldArray({ name: "address", control: form.control });
@@ -38,8 +38,10 @@ export function PatientForm({ patient }: { patient?: Patient }) {
 
   async function onSubmit(values: Patient) {
     const patientId = patient?.id ?? "";
-    await submitPatient(values, patientId);
-    router.push('/');
+    const { error } = await submitPatient(values, patientId);
+    if (!error) {
+      router.push('/');
+    }
   }
 
 
@@ -97,7 +99,7 @@ export function PatientForm({ patient }: { patient?: Patient }) {
             name="dob"
             render={({ field }) => (
               <FormItem className="flex flex-col py-1 mr-10">
-                <FormLabel className="mb-2">Date of birth</FormLabel>
+                <FormLabel className="mb-2">Date of Birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
