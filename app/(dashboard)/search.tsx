@@ -21,7 +21,12 @@ export function SearchInput() {
   }
 
   const ClearSearch = () => (
-    <Button variant='ghost' className='absolute right-0 top-0 bottom-0 flex items-center justify-center' onClick={() => router.replace('/')}>
+    <Button
+      type='reset'
+      variant='ghost'
+      className='absolute right-0 top-0 bottom-0 flex items-center justify-center'
+      onClick={() => router.replace('/')}
+    >
       <X />
     </Button>
   )
