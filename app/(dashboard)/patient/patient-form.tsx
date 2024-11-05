@@ -162,7 +162,7 @@ export function PatientForm({ patient }: { patient?: Patient }) {
           />
         </div>
         {addressFields.map((_field, index) => (
-          <div key={index} className="mb-8 border-2 rounded-md p-2">
+          <div key={index} className="mb-8 border-2 rounded-md p-2 space-y-4">
             <div className="mb-4 font-bold">Address {index + 1}</div>
             <FormField
               control={form.control}

@@ -108,6 +108,7 @@ export const PatientFormSchema = z.object({
   additionalFields: AdditionalFieldSchema.array().default([AdditionalFieldSchema.parse({})]),
 })
 
+
 export const PatientSchema = z.object({
   id: z.string().optional(),
   createdOn: z.number(),
@@ -117,7 +118,8 @@ export const PatientSchema = z.object({
   dob: z.date(errorMessageTooShort),
   status: StatusSchema,
   address: AddressSchema.array(),
-  additionalFields: AdditionalFieldSchema.array(),
+  // remove additional fields with empty values
+  additionalFields: AdditionalFieldSchema.array().transform(val => val.filter(entry => entry.fieldName)),
 });
 
 export type Address = z.infer<typeof AddressSchema>;
